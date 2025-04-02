@@ -1,8 +1,4 @@
 # college-memory-website
-
-
-
-
 # 🎬 Netflix-Style Video Gallery  
 
 A web-based **Netflix-style video gallery** where users can select a profile and watch videos. I created this project to **store and relive my college memories** by organizing videos in a fun and interactive way.
@@ -32,7 +28,7 @@ Instead of storing them as random files, I designed a **Netflix-like UI** where:
 ## 🛠️ How It Works?  
 
 ### 1️⃣ **Run the Project**  
-Simply open the `index.html` file in any web browser.
+Simply open the `home.html` file in any web browser.
 
 ### 2️⃣ **Choose a Profile**  
 Click on a profile image to start watching the video.
