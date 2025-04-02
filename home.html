@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Profile Selection</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: red;
+        }
+        .title {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        .profiles {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .profile img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 0;
+            border: 2px solid white;
+            transition: transform 0.3s;
+        }
+        .profile img:hover {
+            transform: scale(1.1);
+        }
+        .profile-name {
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+        .manage-profiles {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: 1px solid white;
+            background: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .manage-profiles:hover {
+            background: white;
+            color: black;
+        }
+        .add-profile-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .add-profile-container input {
+            margin: 5px;
+        }
+        /* Video Container */
+        #video-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        video {
+            width: 80%;
+            height: auto;
+            max-height: 90vh;
+        }
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            font-size: 24px;
+            color: black;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            border-radius: 50%;
+        }
+        .close-btn:hover {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">NETFLIX</div>
+    <div class="title">Who's watching?</div>
+    
+    <div class="profiles" id="profiles-container">
+        <!-- Default Profiles -->
+        <div class="profile" onclick="playVideo('videos/video1.mp4')">
+            <img src="photos/profile1.jpg" alt="Profile 1">
+            <div class="profile-name">User 1</div>
+        </div>
+        <div class="profile" onclick="playVideo('videos/video2.mp4')">
+            <img src="photos/profile2.jpg" alt="Profile 2">
+            <div class="profile-name">User 2</div>
+        </div>
+        <div class="profile" onclick="playVideo('videos/video3.mp4')">
+            <img src="photos/profile3.jpg" alt="Profile 3">
+            <div class="profile-name">User 3</div>
+        </div>
+        <div class="profile" onclick="playVideo('videos/video4.mp4')">
+            <img src="photos/profile4.jpg" alt="Profile 4">
+            <div class="profile-name">User 4</div>
+        </div>
+    </div>
+
+    <button class="manage-profiles">MANAGE PROFILES</button>
+
+    <div class="add-profile-container">
+        <input type="file" id="profile-image" accept="image/*">
+        <input type="text" id="profile-name" placeholder="Enter profile name">
+        <button onclick="addProfile()">Add Profile</button>
+    </div>
+
+    <div id="video-container">
+        <button class="close-btn" onclick="closeVideo()">X</button>
+        <video id="video-player" controls autoplay>
+            <source id="video-source" src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        function playVideo(videoSrc) {
+            let videoContainer = document.getElementById('video-container');
+            let videoPlayer = document.getElementById('video-player');
+            let videoSource = document.getElementById('video-source');
+
+            // Set the video source and load
+            videoSource.src = videoSrc;
+            videoPlayer.load();
+            videoContainer.style.display = 'flex';
+
+            // Request Full-Screen Mode
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.mozRequestFullScreen) {
+                videoPlayer.mozRequestFullScreen();
+            } else if (videoPlayer.webkitRequestFullscreen) {
+                videoPlayer.webkitRequestFullscreen();
+            } else if (videoPlayer.msRequestFullscreen) {
+                videoPlayer.msRequestFullscreen();
+            }
+        }
+
+        function closeVideo() {
+            let videoContainer = document.getElementById('video-container');
+            let videoPlayer = document.getElementById('video-player');
+
+            // Pause video
+            videoPlayer.pause();
+
+            // Exit Full-Screen Mode
+            if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            // Hide video container
+            videoContainer.style.display = 'none';
+        }
+
+        function addProfile() {
+            let imageInput = document.getElementById('profile-image');
+            let nameInput = document.getElementById('profile-name');
+
+            if (!imageInput.files.length || !nameInput.value.trim()) {
+                alert('Please upload an image and enter a name.');
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                let profilesContainer = document.getElementById('profiles-container');
+                let newProfile = document.createElement('div');
+                newProfile.classList.add('profile');
+                newProfile.onclick = function () {
+                    playVideo('default.mp4'); // Change to a specific video file if needed
+                };
+
+                newProfile.innerHTML = `
+                    <img src="${e.target.result}" alt="Profile">
+                    <div class="profile-name">${nameInput.value}</div>
+                `;
+
+                profilesContainer.appendChild(newProfile);
+                imageInput.value = '';
+                nameInput.value = '';
+            };
+            reader.readAsDataURL(imageInput.files[0]);
+        }
+    </script>
+</body>
+</html>
